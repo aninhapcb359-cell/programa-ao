@@ -1,1 +1,28 @@
 
+import pygame
+from sys import exit 
+
+#Variáveis
+GAME_WIDTH = 512
+GAME_HEIGHT = 512
+
+
+pygame.init()
+window = pygame.display.set_mode((800, 600))
+clock = pygame.time.Clock()
+player1 = pygame.Rect(150, 150, 50, 50)
+player2 = pygame.Vector2(200, 300,)
+
+def draw():
+    window.fill("#caa0f2")
+    pygame.draw.rect(window, "#d6b913", player1)
+    pygame.draw.circle(window, "#1b35e0", player2, 20)
+
+while True: 
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+    draw()
+    pygame.display.update()
+    clock.tick(60)      
