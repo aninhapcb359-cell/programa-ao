@@ -1,0 +1,87 @@
+import pygame
+import sys
+
+# ==========================================
+# 1. INICIALIZAÇÃO DO PYGAME E JANELA
+# ==========================================
+pygame.init()
+
+# Definimos o tamanho da janela (largura, altura)
+LARGURA, ALTURA = 1000, 600
+tela = pygame.display.set_mode((LARGURA, ALTURA))
+pygame.display.set_caption("The Maze Runner - Menu Principal")
+
+# Configuração de Fontes para os textos
+fonte_titulo = pygame.font.SysFont("Arial", 55, bold=True)
+fonte_subtitulo = pygame.font.SysFont("Arial", 24, bold=True)
+
+# ==========================================
+# 2. CONFIGURAÇÕES DE CORES (RGB)
+# ==========================================
+BRANCO = (255, 255, 255)
+CINZA_FUNDO = (30, 30, 36)      # Um cinza mais escuro e moderno para o fundo do menu
+VERDE = (105, 170, 90)
+VERDE_HOVER = (135, 200, 120)  # Cor do botão aceso quando o mouse passa por cima
+AMARELO = (245, 195, 65)
+
+# ==========================================
+# 3. DEFINIÇÃO DA GEOMETRIA DOS BOTÕES
+# ==========================================
+# Criando a "caixa invisível" do botão de Iniciar: [X, Y, Largura, Altura]
+botao_iniciar_rect = pygame.Rect(LARGURA // 2 - 100, 350, 200, 55)
+
+# ==========================================
+# 4. FUNÇÕES DE DESENHO
+# ==========================================
+
+def desenhar_menu():
+    """Desenha a interface gráfica do menu principal."""
+    tela.fill(CINZA_FUNDO) # Preenche o fundo
+    
+    # Desenha o Título do Jogo
+    texto_titulo = fonte_titulo.render("THE MAZE RUNNER", True, AMARELO)
+    tela.blit(texto_titulo, (LARGURA // 2 - texto_titulo.get_width() // 2, 180))
+    
+    # Captura a posição atual do mouse para fazer o efeito Hover
+    pos_mouse = pygame.mouse.get_pos()
+    
+    # TESTE DE COLISÃO DO HOVER: Se o mouse estiver em cima do retângulo do botão
+    if botao_iniciar_rect.collidepoint(pos_mouse):
+        cor_do_botao = VERDE_HOVER   # Botão acende
+        cor_do_texto = CINZA_FUNDO   # Texto inverte para dar contraste
+    else:
+        cor_do_botao = VERDE         # Botão volta ao normal
+        cor_do_texto = BRANCO
+        
+    # Desenha o retângulo do botão com bordas arredondadas (border_radius=15)
+    pygame.draw.rect(tela, cor_do_botao, botao_iniciar_rect, border_radius=15)
+    
+    # Desenha o texto "JOGAR" centralizado perfeitamente dentro do botão
+    texto_botao = fonte_subtitulo.render("JOGAR", True, cor_do_texto)
+    tela.blit(texto_botao, (botao_iniciar_rect.x + (botao_iniciar_rect.width // 2 - texto_botao.get_width() // 2),
+                            botao_iniciar_rect.y + (botao_iniciar_rect.height // 2 - texto_botao.get_height() // 2)))
+
+# ==========================================
+# 5. LOOP PRINCIPAL DO JOGO
+# ==========================================
+while True:
+    # Tratamento de Entradas (Eventos do Mouse e Teclado)
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+            
+        # VERIFICA SE O MOUSE FOI CLICADO
+        if evento.type == pygame.MOUSEBUTTONDOWN:
+            if evento.button == 1: # 1 representa o clique com o botão esquerdo do mouse
+                pos_mouse = pygame.mouse.get_pos()
+                
+                # Se clicar EXATAMENTE dentro do botão JOGAR:
+                if botao_iniciar_rect.collidepoint(pos_mouse):
+                    print("Botão Jogar clicado! Pronto para conectar com a tela do jogo.")
+
+    # Renderiza o menu
+    desenhar_menu()
+
+    # Atualiza a janela gráfica com as modificações processadas
+    pygame.display.flip()
