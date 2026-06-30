@@ -1,0 +1,55 @@
+
+# ==============================================================================
+# 4. CONFIGURAÇÕES E MAPEAMENTO DO TABULEIRO
+# ==============================================================================
+caminhoTabuleiro = [
+    (0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (0, 8), (0, 9),
+    (1, 9), (2, 9), (3, 9), (4, 9), (5, 9),
+    (5, 8), (5, 7), (5, 6), (5, 5), (5, 4), (5, 3), (5, 2), (5, 1), (5, 0),
+    (4, 0), (3, 0), (2, 0)
+]
+
+coresTabuleiro = [
+    PRETO, BRANCO, VERMELHO, VERDE, BRANCO, AZUL, BRANCO, AMARELO, BRANCO, VERMELHO,
+    VERDE, PRETO, AZUL, BRANCO, BRANCO,
+    VERDE, BRANCO, AMARELO, BRANCO, VERMELHO, VERDE, BRANCO, AZUL, VERMELHO,
+    AMARELO, VERDE, PRETO
+]
+
+
+# ==============================================================================
+# 8. REGRAS E EFEITOS DAS CASAS DO TABULEIRO
+# ==============================================================================
+def AplicarAcoes(posicao, jogadorAtual):
+    global scoreP1, scoreP2, p1Pulado, p2Pulado, turnoP1, textoAcao
+    if posicao == 0 or posicao == len(caminhoTabuleiro) - 1:
+        return
+
+    cor = coresTabuleiro[posicao]
+
+    if jogadorAtual == 1:
+        if cor == VERDE:
+            if scoreP1 < 10: scoreP1 += 1
+            textoAcao = "CASA VERDE: Ganhe 1 ponto!"
+        elif cor == VERMELHO:
+            scoreP1 -= 3 
+            textoAcao = "CASA VERMELHA: Perdeu 3 pontos!"
+        elif cor == AMARELO:
+            p1Pulado = True
+            textoAcao = "CASA AMARELA: Fique uma rodada sem jogar!"
+        elif cor == AZUL:
+            turnoP1 = True  
+            textoAcao = "CASA AZUL: Ganhe outra jogada!"
+    else:
+        if cor == VERDE:
+            if scoreP2 < 10: scoreP2 += 1
+            textoAcao = "CASA VERDE: Ganhe 1 ponto!"
+        elif cor == VERMELHO:
+            scoreP2 -= 3 
+            textoAcao = "CASA VERMELHA: Perdeu 3 pontos!"
+        elif cor == AMARELO:
+            p2Pulado = True
+            textoAcao = "CASA AMARELA: Fique uma rodada sem jogar!"
+        elif cor == AZUL:
+            turnoP1 = False  
+            textoAcao = "CASA AZUL: Ganhe outra jogada!"
