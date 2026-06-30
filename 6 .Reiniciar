@@ -1,0 +1,33 @@
+# ==============================================================================
+# 9. MECÂNICA DE LIMITAÇÃO E REINICIALIZAÇÃO DO MOVIMENTO
+# ==============================================================================
+def tentarMovimento(posAtual, passos):
+    posDestino = posAtual + passos
+    if posDestino >= len(caminhoTabuleiro):
+        posDestino = len(caminhoTabuleiro) - 1
+    return posDestino
+
+def reiniciar_jogo():
+    global posP1, posP2, scoreP1, scoreP2, turnoP1, p1Pulado, p2Pulado
+    global faseSorteio, dadoSorteioP1, dadoSorteioP2, vezDeQuemSorteia
+    global numDado, textoEvento, textoAcao, fimDeJogo, ganhador
+
+    posP1 = 0
+    posP2 = 0
+    scoreP1 = 10
+    scoreP2 = 10
+    
+    turnoP1 = True  
+    p1Pulado = False
+    p2Pulado = False
+
+    faseSorteio = True
+    dadoSorteioP1 = 0
+    dadoSorteioP2 = 0
+    vezDeQuemSorteia = 1  
+
+    numDado = 0
+    textoEvento = "Ordem de jogada: Jogador 1, role o dado para disputar o início!"
+    textoAcao = "" 
+    fimDeJogo = False
+    ganhador = ""
