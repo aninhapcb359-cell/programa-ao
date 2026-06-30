@@ -1,0 +1,48 @@
+# ==============================================================================
+# 11. GAME LOOP (LOOP PRINCIPAL OPERACIONAL)
+# ==============================================================================
+rodando = True
+while rodando:
+    
+    if estado == "jogo" and not fimDeJogo and not faseSorteio:
+        if turnoP1 and p1Pulado:
+            textoEvento = ""
+            textoAcao = " "
+            p1Pulado = False
+            turnoP1 = False   
+        elif not turnoP1 and p2Pulado:
+            textoEvento = " "
+            textoAcao = " "
+            p2Pulado = False
+            turnoP1 = True   
+
+    if estado == "menu":
+        desenhar_menu()
+    elif estado == "jogo":
+        desenharTudo()
+        
+        if fimDeJogo:
+            pygame.draw.rect(tela, (240, 240, 240), (MARGEMESQUERDA, MARGEMSUPERIOR + 80, 660, 250))
+            pygame.draw.rect(tela, PRETO, (MARGEMESQUERDA, MARGEMSUPERIOR + 80, 660, 250), 3)
+            
+            surfWin = fonteVitoria.render(ganhador, True, "#d4a509")
+            tela.blit(surfWin, (MARGEMESQUERDA + 40, MARGEMSUPERIOR + 100))
+            resultados = f"Pontuação Final -> P1: {scoreP1} pts | P2: {scoreP2} pts"
+            surfRes = fonte.render(resultados, True, PRETO)
+            tela.blit(surfRes, (MARGEMESQUERDA + 40, MARGEMSUPERIOR + 160))
+
+            pos_mouse = pygame.mouse.get_pos()
+            if botao_reiniciar_rect.collidepoint(pos_mouse):
+                cor_btn = VERDE_HOVER
+                cor_txt = CINZA_FUNDO
+            else:
+                cor_btn = AZUL
+                cor_txt = BRANCO
+
+            pygame.draw.rect(tela, cor_btn, botao_reiniciar_rect, border_radius=10)
+            txt_reiniciar = fonteMenuBotao.render("REINICIAR", True, cor_txt)
+            tela.blit(txt_reiniciar, (botao_reiniciar_rect.x + (botao_reiniciar_rect.width // 2 - txt_reiniciar.get_width() // 2),
+                                      botao_reiniciar_rect.y + (botao_reiniciar_rect.height // 2 - txt_reiniciar.get_height() // 2)))
+
+    pygame.display.flip()
+    
