@@ -1,0 +1,7 @@
+# ==============================================================================
+# 6. SISTEMA DE SORTEIO DE INÍCIO (DISPUTA DO DADO)
+# ==============================================================================
+faseSorteio = True
+dadoSorteioP1 = 0
+dadoSorteioP2 = 0
+vezDeQuemSorteia = 1
