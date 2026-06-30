@@ -1,0 +1,144 @@
+# ==========================================================================
+    # 12. GERENCIADOR DE INPUTS E EVENTOS DO USUÁRIO
+    # ==========================================================================
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            rodando = False
+            
+        if evento.type == pygame.MOUSEBUTTONDOWN:
+            if evento.button == 1: 
+                pos_mouse = pygame.mouse.get_pos()
+                
+                if estado == "menu" and botao_iniciar_rect.collidepoint(pos_mouse):
+                    estado = "jogo"
+                
+                if estado == "jogo" and fimDeJogo and botao_reiniciar_rect.collidepoint(pos_mouse):
+                    reiniciar_jogo()
+        
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_ESCAPE and estado == "jogo":
+                estado = "menu"
+                
+            # --- MECÂNICA GERADORA DO DADO COM ANIMAÇÃO ---
+            if evento.key == pygame.K_SPACE and estado == "jogo" and not fimDeJogo:
+                textoAcao = "" 
+                
+                # === BLOCO DA ANIMAÇÃO DE GIRO MULTIDIRECIONAL ===
+                angulo = 0
+                tempo_animacao = 30  # Quantidade de quadros que a animação vai durar
+                tamanho_max = 130    # Tamanho da base do dado
+                
+                centroX = LARGURATELA // 2
+                centroY = ALTURATELA // 2
+
+                for frame in range(tempo_animacao):
+                    desenharTudo() # Mantém o fundo do tabuleiro atualizado atrás
+                    
+                    angulo += 25 # Incremento veloz do giro
+                    
+                    # Gera uma distorção em X e Y usando seno/cosseno para simular rolagem 3D
+                    fator_w = abs(math.cos(math.radians(angulo)))
+                    fator_h = abs(math.sin(math.radians(angulo * 0.7))) # Ritmo ligeiramente diferente para parecer caótico
+                    
+                    largura_atual = int(tamanho_max * max(0.2, fator_w))
+                    altura_atual = int(tamanho_max * max(0.2, fator_h))
+                    
+                    # Cria a superfície do dado e rotaciona ela graficamente
+                    surf_dado = pygame.Surface((largura_atual, altura_atual), pygame.SRCALPHA)
+                    pygame.draw.rect(surf_dado, (245, 245, 245), (0, 0, largura_atual, altura_atual), border_radius=12)
+                    pygame.draw.rect(surf_dado, PRETO, (0, 0, largura_atual, altura_atual), 4, border_radius=12)
+                    
+                    # Desenha bolinhas aleatórias piscando nas faces durante o giro para dar dinamismo
+                    if frame % 3 == 0:
+                        pygame.draw.circle(surf_dado, PRETO, (largura_atual // 2, altura_atual // 2), 6)
+                    else:
+                        pygame.draw.circle(surf_dado, PRETO, (largura_atual // 4, altura_atual // 4), 6)
+                        pygame.draw.circle(surf_dado, PRETO, (3 * largura_atual // 4, 3 * altura_atual // 4), 6)
+                    
+                    # Rotaciona a superfície no Pygame
+                    surf_dado_rotacionada = pygame.transform.rotate(surf_dado, angulo % 360)
+                    rect_dado = surf_dado_rotacionada.get_rect(center=(centroX, centroY))
+                    
+                    # Imprime na tela
+                    tela.blit(surf_dado_rotacionada, rect_dado.topleft)
+                    pygame.display.flip()
+                    pygame.time.delay(20) # Controla a velocidade do frame da animação
+                
+                # === FIM DA ANIMAÇÃO -> SORTEIO E EXIBIÇÃO DO RESULTADO FIXO ===
+                numDado = random.randint(1, 6)
+                
+                desenharTudo()
+                larguraCaixa, alturaCaixa = 200, 160
+                cBoxX = LARGURATELA // 2 - larguraCaixa // 2
+                cBoxY = ALTURATELA // 2 - alturaCaixa // 2
+                pygame.draw.rect(tela, (230, 230, 230), (cBoxX, cBoxY, larguraCaixa, alturaCaixa))
+                pygame.draw.rect(tela, PRETO, (cBoxX, cBoxY, larguraCaixa, alturaCaixa), 4)
+                surfNumCentro = fonteDadoCentro.render(str(numDado), True, PRETO)
+                tela.blit(surfNumCentro, (cBoxX + (larguraCaixa - surfNumCentro.get_width())//2, 
+                                          cBoxY + (alturaCaixa - surfNumCentro.get_height())//2))
+                pygame.display.flip()
+                pygame.time.delay(800) # Pausa menor pois a animação já tomou tempo do jogador
+                
+                # --- PROCESSAMENTO DO SORTEIO INICIAL ---
+                if faseSorteio:
+                    if vezDeQuemSorteia == 1:
+                        dadoSorteioP1 = numDado
+                        textoEvento = f"Jogador 1 tirou {dadoSorteioP1}."
+                        textoAcao = "Vez do Jogador 2 rolar o dado!"
+                        vezDeQuemSorteia = 2
+                    else:
+                        dadoSorteioP2 = numDado
+                        if dadoSorteioP1 > dadoSorteioP2:
+                            textoEvento = f"J1 tirou {dadoSorteioP1} e J2 tirou {dadoSorteioP2}."
+                            textoAcao = "Jogador 1 inicia a partida!"
+                            turnoP1 = True
+                            faseSorteio = False
+                        elif dadoSorteioP2 > dadoSorteioP1:
+                            textoEvento = f"J1 tirou {dadoSorteioP1} e J2 tirou {dadoSorteioP2}."
+                            textoAcao = "Jogador 2 inicia a partida!"
+                            turnoP1 = False
+                            faseSorteio = False
+                        else:
+                            textoEvento = f"Empate em {dadoSorteioP1}! Reiniciando Sorteio."
+                            textoAcao = "Jogador 1 rola novamente!"
+                            vezDeQuemSorteia = 1
+                    continue 
+                
+                # --- MOVIMENTAÇÃO E REGRAS DO JOGADOR 1 ---
+                if turnoP1:
+                    textoEvento = f"Jogador 1 avançou {numDado} casas."
+                    novaPos = tentarMovimento(posP1, numDado)
+                    
+                    posP1 = novaPos
+                    if posP1 == 11: 
+                        posP1 = 0
+                        textoAcao = "CASA PRETA! Volte para o INÍCIO!"
+                        turnoP1 = False
+                    else:
+                        turnoP1 = False
+                        AplicarAcoes(posP1, 1)
+
+                    if posP1 == len(caminhoTabuleiro) - 1:
+                        fimDeJogo = True
+                        ganhador = "Jogador 1 ganhou!!"
+                        
+                # --- MOVIMENTAÇÃO E REGRAS DO JOGADOR 2 ---
+                else:
+                    textoEvento = f"Jogador 2 avançou {numDado} casas."
+                    novaPos = tentarMovimento(posP2, numDado)
+                    
+                    posP2 = novaPos
+                    if posP2 == 11: 
+                        posP2 = 0
+                        textoAcao = "CASA PRETA! Volte para o INÍCIO!"
+                        turnoP1 = True
+                    else:
+                        turnoP1 = True
+                        AplicarAcoes(posP2, 2)
+
+                    if posP2 == len(caminhoTabuleiro) - 1:
+                        fimDeJogo = True
+                        ganhador = "Jogador 2 ganhou!"
+
+pygame.quit()
+sys.exit()
