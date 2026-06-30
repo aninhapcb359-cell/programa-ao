@@ -1,0 +1,13 @@
+# ==============================================================================
+# 7. VARIÁVEIS DE ESTADO E TEXTOS GLOBAIS DE INTERAÇÃO
+# ==============================================================================
+numDado = 0
+textoEvento = "Ordem de jogada: Jogador 1, role o dado para disputar o início!"
+textoAcao = "" 
+fimDeJogo = False
+ganhador = ""
+
+botao_iniciar_rect = pygame.Rect(LARGURATELA // 2 - 100, ALTURATELA // 2 + 20, 200, 55)
+botao_reiniciar_rect = pygame.Rect(LARGURATELA // 2 - 100, MARGEMSUPERIOR + 260, 200, 50)
+
+estado = "menu"
