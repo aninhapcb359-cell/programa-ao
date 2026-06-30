@@ -1,0 +1,53 @@
+import pygame
+import sys
+import random
+import math
+
+pygame.init()
+pygame.font.init()
+
+# ==============================================================================
+# 1. CONFIGURAÇÕES DE DIMENSÕES DA TELA E SISTEMA
+# ==============================================================================
+TAMANHOQUADRADO = 60
+COLUNAS = 11
+LINHAS = 6
+MARGEMESQUERDA = 100
+MARGEMDIREITA = 40
+MARGEMSUPERIOR = 140
+MARGEMINFERIOR = 140
+LARGURATELA = (COLUNAS * TAMANHOQUADRADO) + MARGEMESQUERDA + MARGEMDIREITA
+ALTURATELA = (LINHAS * TAMANHOQUADRADO) + MARGEMSUPERIOR + MARGEMINFERIOR
+
+tela = pygame.display.set_mode((LARGURATELA, ALTURATELA))
+pygame.display.set_caption("Projeto IP - The Maze Runner")
+
+# ==============================================================================
+# 2. PALETA DE CORES 
+# ==============================================================================
+PRETO        = ("BLACK")
+BRANCO       = ("lightgray")
+VERMELHO     = ("#b52d2d")
+VERDE        = ("#8fb52d")
+VERDE_HOVER  = ("#a6cf38") 
+AZUL         = ("#3648ba")
+AMARELO      = ("#edcc67")
+LINHACONTOUR = ("Black")
+CINZA_FUNDO  = (30, 30, 36)
+
+CORP1 = ("#800080")    
+CORP2 = ("#d05123")  
+
+# ==============================================================================
+# 3. ESTILIZAÇÃO E FONTES DE TEXTO
+# ==============================================================================
+fonte = pygame.font.SysFont("MV boli", 22)
+fontePequena = pygame.font.SysFont("inkfree", 16, bold=True)
+fonteAcao = pygame.font.SysFont("georgia", 18, bold=True) 
+fonteVitoria = pygame.font.SysFont("MV boli", 36, bold=True)
+fonteDadoCentro = pygame.font.SysFont("MV boli", 80, bold=True)
+fonteVezCentro = pygame.font.SysFont("inkfree", 28, bold=True)
+
+fonteMenuTitulo = pygame.font.SysFont("georgia", 50, bold=True)
+fonteMenuBotao = pygame.font.SysFont("inkfree", 26, bold=True)
+
