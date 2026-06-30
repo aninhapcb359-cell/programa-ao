@@ -1,0 +1,87 @@
+# ==============================================================================
+# 10. RENDERIZAÇÃO GRÁFICA (DESENHOS DAS TELAS)
+# ==============================================================================
+def desenhar_menu():
+    tela.fill(CINZA_FUNDO)
+    txt_titulo = fonteMenuTitulo.render("THE MAZE RUNNER", True, AMARELO)
+    tela.blit(txt_titulo, (LARGURATELA // 2 - txt_titulo.get_width() // 2, ALTURATELA // 2 - 120))
+    
+    pos_mouse = pygame.mouse.get_pos()
+    if botao_iniciar_rect.collidepoint(pos_mouse):
+        cor_btn = VERDE_HOVER
+        cor_txt = CINZA_FUNDO
+    else:
+        cor_btn = VERDE
+        cor_txt = BRANCO
+        
+    pygame.draw.rect(tela, cor_btn, botao_iniciar_rect, border_radius=15)
+    txt_btn = fonteMenuBotao.render("JOGAR", True, cor_txt)
+    tela.blit(txt_btn, (botao_iniciar_rect.x + (botao_iniciar_rect.width // 2 - txt_btn.get_width() // 2),
+                        botao_iniciar_rect.y + (botao_iniciar_rect.height // 2 - txt_btn.get_height() // 2)))
+
+def desenharTudo():
+    tela.fill("#8a97ea")
+    
+    for i, (linha, coluna) in enumerate(caminhoTabuleiro):
+        posX = (coluna * TAMANHOQUADRADO) + MARGEMESQUERDA
+        posY = (linha * TAMANHOQUADRADO) + MARGEMSUPERIOR
+        pygame.draw.rect(tela, coresTabuleiro[i], (posX, posY, TAMANHOQUADRADO, TAMANHOQUADRADO))
+        pygame.draw.rect(tela, LINHACONTOUR, (posX, posY, TAMANHOQUADRADO, TAMANHOQUADRADO), 1)
+
+        if i == 0:
+            txtInicio = fontePequena.render("INÍCIO", True, PRETO)
+            tela.blit(txtInicio, (posX + 5, posY - 25))
+        if i == len(caminhoTabuleiro) - 1:
+            txtFim = fontePequena.render("FIM", True, PRETO)
+            tela.blit(txtFim, (posX + 15, posY + TAMANHOQUADRADO - 80))
+
+    lP1, cP1 = caminhoTabuleiro[posP1]
+    xP1 = (cP1 * TAMANHOQUADRADO) + MARGEMESQUERDA + TAMANHOQUADRADO // 2
+    yP1 = (lP1 * TAMANHOQUADRADO) + MARGEMSUPERIOR + TAMANHOQUADRADO // 2
+
+    lP2, cP2 = caminhoTabuleiro[posP2]
+    xP2 = (cP2 * TAMANHOQUADRADO) + MARGEMESQUERDA + TAMANHOQUADRADO // 2
+    yP2 = (lP2 * TAMANHOQUADRADO) + MARGEMSUPERIOR + TAMANHOQUADRADO // 2
+
+    if posP1 == posP2:
+        pygame.draw.circle(tela, CORP1, (xP1 - 12, yP1), 12)
+        pygame.draw.circle(tela, CORP2, (xP2 + 12, yP2), 12)
+    else:
+        pygame.draw.circle(tela, CORP1, (xP1, yP1), 15)
+        pygame.draw.circle(tela, CORP2, (xP2, yP2), 15)
+
+    if not faseSorteio and not fimDeJogo:
+        txtCentro = "VEZ DO JOGADOR 1" if turnoP1 else "VEZ DO JOGADOR 2"
+        corCentro = CORP1 if turnoP1 else CORP2
+        surfCentro = fonteVezCentro.render(txtCentro, True, corCentro)
+        meioX = LARGURATELA // 2 - surfCentro.get_width() // 2
+        meioY = ALTURATELA // 2 - surfCentro.get_height() // 2
+        tela.blit(surfCentro, (meioX, meioY))
+
+    surfEvento = fonte.render(textoEvento, True, (40, 40, 40))
+    centroX_evento = (LARGURATELA // 2) - (surfEvento.get_width() // 2)
+    tela.blit(surfEvento, (centroX_evento, 30))
+
+    if textoAcao:
+        surfAcao = fonteAcao.render(textoAcao, True, ("#BFD60E"))
+        centroX_acao = (LARGURATELA // 2) - (surfAcao.get_width() // 2)
+        tela.blit(surfAcao, (centroX_acao, 65))
+
+    larguraFundo = 220
+    alturaFundo = 45
+    fundoScore = pygame.Surface((larguraFundo, alturaFundo), pygame.SRCALPHA)
+    pygame.draw.rect(fundoScore, (0, 0, 0, 80), (0, 0, larguraFundo, alturaFundo), border_radius=5)
+
+    xP1_fundo = MARGEMESQUERDA
+    yP1_fundo = ALTURATELA - MARGEMINFERIOR + 60
+    tela.blit(fundoScore, (xP1_fundo, yP1_fundo))
+    txtP1Score = f"Jogador 1: {scoreP1} pts"
+    surfP1 = fonte.render(txtP1Score, True, (220, 180, 255)) 
+    tela.blit(surfP1, (xP1_fundo + 15, yP1_fundo + 7))
+
+    xP2_fundo = MARGEMESQUERDA + 300
+    yP2_fundo = ALTURATELA - MARGEMINFERIOR + 60
+    tela.blit(fundoScore, (xP2_fundo, yP2_fundo))
+    txtP2Score = f"Jogador 2: {scoreP2} pts"
+    surfP2 = fonte.render(txtP2Score, True, (255, 200, 150)) 
+    tela.blit(surfP2, (xP2_fundo + 15, yP2_fundo + 7))
